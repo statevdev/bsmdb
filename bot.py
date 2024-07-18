@@ -27,7 +27,7 @@ if __name__ == '__main__':
 
     # Инициализация и запуск UpdateGithubPage
     updater = GithubPageUpdater(**pageupdconfig)
-    scheduler = updater.run(3, 40)
+    scheduler = updater.run(5, 1)
 
     try:
         # Запуск бота
