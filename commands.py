@@ -139,12 +139,13 @@ class RequestCommand(Commands):
         if context.user_data:
             await getattr(self, f'_step_{len(context.user_data)}')(update, context)
 
+
 # test
 class TestCommand(Commands):
     TEST_COMMAND_TEXT = "Тестовое сообщение"
 
     def setup(self, bot):
-        test_handler = CommandHandler('start', self.run)
+        test_handler = CommandHandler('test', self.run)
         bot.add_handler(test_handler)
 
     async def run(self, update, context):
