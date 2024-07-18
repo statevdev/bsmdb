@@ -14,7 +14,7 @@ class GithubPageUpdater:
         repo = git.Repo(self.local_repo)
         repo.git.add(list(self.html_files.values()))
         repo.index.commit(self.commit_message)
-        repo.remotes.origin_page.push()
+        repo.remotes.origin.push()
 
     def add_job(self, at_hour, at_minutes):
         scheduler = BackgroundScheduler()
