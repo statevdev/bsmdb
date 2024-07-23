@@ -1,7 +1,7 @@
 import git
 from apscheduler.schedulers.background import BackgroundScheduler
 from expdata import ExportData
-from bot_settings import pageupdconfig
+from config import config
 
 
 class GithubPageUpdater:
@@ -40,10 +40,10 @@ class GithubPageUpdater:
 
     def htmls_creator(self):
         for table_name, output_file in self.html_files.items():
-            ExportData.export_to_html(self.database_path, table_name, output_file)
+            ExportData.export_to_html(self.database_path, table_name, output_file, decrypt=False)
 
 
 if __name__ == '__main__':
-    updater = GithubPageUpdater(**pageupdconfig)
+    updater = GithubPageUpdater(**config['pageupd'])
     updater.htmls_creator()
     updater.push_to_github()

@@ -2,7 +2,7 @@ import re
 from abc import ABC, abstractmethod
 from telegram.ext import CommandHandler, MessageHandler, filters
 
-from bot_settings import bot_config
+from config import bot_config
 from database_scripts import BotDatabase
 
 

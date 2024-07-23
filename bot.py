@@ -3,7 +3,7 @@ from telegram.ext import ApplicationBuilder
 from commands import CommandsFactory
 from database_scripts import BotDatabase
 from pageupd import GithubPageUpdater
-from bot_settings import bot_config, pageupdconfig
+from config import config
 
 logging.basicConfig(
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
@@ -22,16 +22,16 @@ class Bot:
 
 if __name__ == '__main__':
     # Инициализация базы данных
-    database = BotDatabase(bot_config['database_path'])
+    database = BotDatabase(config['db']['database_path'])
     database.create_tables()
 
     # Инициализация и запуск UpdateGithubPage
-    updater = GithubPageUpdater(**pageupdconfig)
-    scheduler = updater.run(5, 1)
+    updater = GithubPageUpdater(**config['pageupd'])
+    scheduler = updater.run(**config['update_time'])
 
     try:
         # Запуск бота
-        bot = Bot(bot_config['telegram_token'])
+        bot = Bot(config['bot']['telegram_token'])
         bot.run()
 
         # Держим главный поток живым, чтобы позволить планировщику работать

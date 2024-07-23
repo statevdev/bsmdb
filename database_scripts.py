@@ -1,4 +1,5 @@
 import sqlite3
+from crypt import Crypt
 
 
 class BotDatabase:
@@ -10,10 +11,10 @@ class BotDatabase:
             cursor = connection.cursor()
             cursor.executescript("""
                 BEGIN;
-                CREATE TABLE IF NOT EXISTS users (user_id INTEGER PRIMARY KEY, user_name, contact_info);
+                CREATE TABLE IF NOT EXISTS users (user_id PRIMARY KEY, user_name, contact_info);
                 CREATE TABLE IF NOT EXISTS requests (
-                request_id INTEGER PRIMARY KEY,
-                user_id INTEGER,
+                request_id PRIMARY KEY,
+                user_id,
                 problem_description,
                 contact_time,
                 FOREIGN KEY(user_id) REFERENCES users(user_id));
@@ -25,7 +26,12 @@ class BotDatabase:
             cursor = connection.cursor()
             cursor.execute("""
                 INSERT OR REPLACE INTO users (user_id, user_name, contact_info)
-                VALUES (?,?,?)""", (user_id, user_name, contact_info))
+                VALUES (?,?,?)""",
+                           await Crypt.tuple_encrypter(user_id, user_name, contact_info))
             cursor.execute("""
                 INSERT INTO requests (request_id, user_id, problem_description, contact_time)
-                VALUES(?,?,?,?)""", (request_id, user_id, problem_description, contact_time))
+                VALUES(?,?,?,?)""",
+                           await Crypt.tuple_encrypter(request_id, user_id, problem_description, contact_time))
+
+
+

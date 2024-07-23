@@ -2,9 +2,10 @@ import argparse
 import sqlite3
 import pandas
 from docx import Document
+from crypt import Crypt
 
 
-class ExportData():
+class ExportData:
     @staticmethod
     def export_to_word(database_path, table_name, output_file):
         with sqlite3.connect(database_path) as connection:
@@ -18,7 +19,7 @@ class ExportData():
 
             for i, row in enumerate(dataframe.itertuples(), 1):
                 for j, value in enumerate(row[1:]):
-                    table.cell(i, j).text = str(value)
+                    table.cell(i, j).text = Crypt.decrypt_data(value)
 
             doc.save(output_file if output_file else f'{table_name}.docx')
 
@@ -26,18 +27,21 @@ class ExportData():
     def export_to_excel(database_path, table_name, output_file):
         with sqlite3.connect(database_path) as connection:
             dataframe = pandas.read_sql_query(f"SELECT * FROM {table_name}", connection)
+            dataframe = dataframe.map(Crypt.decrypt_data)
             dataframe.to_excel(output_file if output_file else f'{table_name}.xlsx', index=False, engine='openpyxl')
 
     @staticmethod
     def export_to_csv(database_path, table_name, output_file):
         with sqlite3.connect(database_path) as connection:
             dataframe = pandas.read_sql_query(f"SELECT * FROM {table_name}", connection)
+            dataframe = dataframe.map(Crypt.decrypt_data)
             dataframe.to_csv(output_file if output_file else f'{table_name}.csv', index=False, encoding='UTF-8')
 
     @staticmethod
-    def export_to_html(database_path, table_name, output_file):
+    def export_to_html(database_path, table_name, output_file, decrypt=True):
         with sqlite3.connect(database_path) as connection:
             dataframe = pandas.read_sql_query(f"SELECT * FROM {table_name}", connection)
+            dataframe = dataframe.map(Crypt.decrypt_data) if decrypt else dataframe
             html_content = dataframe.to_html(index=False, border=1)
 
             # Добавляем мета-тег кодировки
