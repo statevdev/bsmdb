@@ -2,7 +2,7 @@ import re
 from abc import ABC, abstractmethod
 from telegram.ext import CommandHandler, MessageHandler, filters
 
-from config import bot_config
+from config import config
 from database_scripts import BotDatabase
 
 
@@ -125,7 +125,7 @@ class RequestCommand(Commands):
 
     async def _step_4(self, update, context):
         context.user_data['contact_time'] = update.message.text
-        database = BotDatabase(bot_config['database_path'])
+        database = BotDatabase(config['db']['database_path'])
 
         await database.save_user_data(
             user_id=update.effective_user.id,
