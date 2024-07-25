@@ -13,12 +13,11 @@ logging.basicConfig(
 
 class Bot:
     def __init__(self, token):
-        self.application_builder = ApplicationBuilder()
-        self.application = self.application_builder.token(token).build()
-        self.commands = CommandsFactory.create_commands(self.application_builder)
+        self.application = ApplicationBuilder().token(token).build()
+        self.commands = CommandsFactory.create_commands(self.application)
 
     def run(self):
-        self.application_builder.run_polling()
+        self.application.run_polling()
 
 
 if __name__ == '__main__':
