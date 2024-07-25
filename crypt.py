@@ -1,5 +1,5 @@
 from cryptography.fernet import Fernet
-from config import config
+from bsmdb.config import config
 
 
 class Crypt:

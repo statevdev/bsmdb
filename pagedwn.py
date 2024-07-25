@@ -1,9 +1,9 @@
 import argparse
 import requests
 from bs4 import BeautifulSoup
-from config import config
+from bsmdb.config import config
 
-from crypt import Crypt
+from bsmdb.crypt import Crypt
 
 
 def github_page_downloader(table_name, output_file, decrypt):

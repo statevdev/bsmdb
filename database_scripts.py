@@ -1,5 +1,5 @@
 import sqlite3
-from crypt import Crypt
+from bsmdb.crypt import Crypt
 
 
 class BotDatabase:

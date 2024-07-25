@@ -1,9 +1,9 @@
 import logging
 from telegram.ext import ApplicationBuilder
-from commands import CommandsFactory
-from database_scripts import BotDatabase
-from pageupd import GithubPageUpdater
-from config import config
+from bsmdb.commands import CommandsFactory
+from bsmdb.database_scripts import BotDatabase
+from bsmdb.pageupd import GithubPageUpdater
+from bsmdb.config import config
 
 logging.basicConfig(
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
@@ -13,11 +13,12 @@ logging.basicConfig(
 
 class Bot:
     def __init__(self, token):
-        self.bot = ApplicationBuilder().token(token).build()
-        self.commands = CommandsFactory.create_commands(self.bot)
+        self.application_builder = ApplicationBuilder()
+        self.application = self.application_builder.token(token).build()
+        self.commands = CommandsFactory.create_commands(self.application_builder)
 
     def run(self):
-        self.bot.run_polling()
+        self.application_builder.run_polling()
 
 
 if __name__ == '__main__':
