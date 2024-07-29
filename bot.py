@@ -17,17 +17,17 @@ class Bot:
         self.commands = CommandsFactory.create_commands(self.application)
 
     def run(self):
-        self.application.run_polling()
+        return self.application.run_polling()
 
 
-if __name__ == '__main__':
+def main():
     # Инициализация базы данных
     database = BotDatabase(config['db']['database_path'])
     database.create_tables()
 
     # Инициализация и запуск UpdateGithubPage
     updater = GithubPageUpdater(**config['pageupd'])
-    scheduler = updater.run(**config['update_time'])
+    scheduler = updater.run_on_schedule(**config['update_time'])
 
     try:
         # Запуск бота
@@ -39,3 +39,7 @@ if __name__ == '__main__':
             pass
     except (KeyboardInterrupt, SystemExit):
         scheduler.shutdown()
+
+
+if __name__ == '__main__':
+    main()

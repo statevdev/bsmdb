@@ -33,10 +33,14 @@ class GithubPageUpdater:
         scheduler.start()
         return scheduler
 
-    def run(self, hour, minutes):
+    def run_on_schedule(self, hour, minutes):
         self.htmls_creator()
         scheduler = self._add_job(at_hour=hour, at_minutes=minutes)
         return scheduler
+
+    def run_now(self):
+        self.htmls_creator()
+        self.push_to_github()
 
     def htmls_creator(self):
         for table_name, output_file in self.html_files.items():
@@ -45,5 +49,5 @@ class GithubPageUpdater:
 
 if __name__ == '__main__':
     updater = GithubPageUpdater(**config['pageupd'])
-    updater.htmls_creator()
-    updater.push_to_github()
+    updater.run_now()
+
