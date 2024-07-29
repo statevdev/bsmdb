@@ -1,9 +1,9 @@
 import logging
 from telegram.ext import ApplicationBuilder
-from bsmdb.commands import CommandsFactory
-from bsmdb.database_scripts import BotDatabase
-from bsmdb.pageupd import GithubPageUpdater
-from bsmdb.config import config
+from commands import CommandsFactory
+from database_scripts import BotDatabase
+from pageupd import GithubPageUpdater
+from config import config
 
 logging.basicConfig(
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',

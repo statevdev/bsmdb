@@ -2,7 +2,7 @@ import argparse
 import sqlite3
 import pandas
 from docx import Document
-from bsmdb.crypt import Crypt
+from crypt_data import Crypt
 
 
 class ExportData:

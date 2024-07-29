@@ -1,7 +1,7 @@
 import git
 from apscheduler.schedulers.background import BackgroundScheduler
-from bsmdb.expdata import ExportData
-from bsmdb.config import config
+from expdata import ExportData
+from config import config
 
 
 class GithubPageUpdater:

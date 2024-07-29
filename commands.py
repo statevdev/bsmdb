@@ -2,8 +2,8 @@ import re
 from abc import ABC, abstractmethod
 from telegram.ext import CommandHandler, MessageHandler, filters
 
-from bsmdb.config import config
-from bsmdb.database_scripts import BotDatabase
+from config import config
+from database_scripts import BotDatabase
 
 
 async def send_message(update, context, text):
