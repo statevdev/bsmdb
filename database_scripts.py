@@ -1,3 +1,4 @@
+import argparse
 import sqlite3
 from crypt_data import Crypt
 
@@ -33,5 +34,13 @@ class BotDatabase:
                 VALUES(?,?,?,?)""",
                            await Crypt.tuple_encrypter(request_id, user_id, problem_description, contact_time))
 
+
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description='Create database')
+
+    parser.add_argument('path', help='Path to database')
+    args = parser.parse_args()
+
+    BotDatabase(args.path).create_tables()
 
 

@@ -51,22 +51,12 @@ class TestMain(unittest.TestCase):
         updater = GithubPageUpdater(**self.config_pageupd)
         updater.htmls_creator()
 
-        import psutil
-        # Получаем текущий процесс
-        process = psutil.Process()
-        # Получаем список открытых файлов
-        open_files = process.open_files()
-        print("Открытые файлы:")
-        for file in open_files:
-            print(file.path)
-
         # Проверяем, что нужные файлы создались
         self.assertTrue(os.path.exists(self.config_pageupd['database_path']))
         self.assertTrue(os.path.exists(self.config_pageupd['html_files']['users']))
         self.assertTrue(os.path.exists(self.config_pageupd['html_files']['requests']))
 
     def tearDown(self):
-        gc.collect()  # Без принудительной очистки мусора код не работает :/
         shutil.rmtree(self.temp_dir)
 
 

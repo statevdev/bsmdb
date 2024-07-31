@@ -8,58 +8,61 @@ from crypt_data import Crypt
 class ExportData:
     @staticmethod
     def export_to_word(database_path, table_name, output_file):
-        with sqlite3.connect(database_path) as connection:
-            dataframe = pandas.read_sql_query(f"SELECT * FROM {table_name}", connection)
-            doc = Document()
-            table = doc.add_table(rows=dataframe.shape[0] + 1, cols=dataframe.shape[1])
-            table.style = 'Table Grid'
+        connection = sqlite3.connect(database_path)
+        dataframe = pandas.read_sql_query(f"SELECT * FROM {table_name}", connection)
+        doc = Document()
+        table = doc.add_table(rows=dataframe.shape[0] + 1, cols=dataframe.shape[1])
+        table.style = 'Table Grid'
 
-            for i, column_name in enumerate(dataframe.columns):
-                table.cell(0, i).text = column_name
+        for i, column_name in enumerate(dataframe.columns):
+            table.cell(0, i).text = column_name
 
-            for i, row in enumerate(dataframe.itertuples(), 1):
-                for j, value in enumerate(row[1:]):
-                    table.cell(i, j).text = Crypt.decrypt_data(value)
+        for i, row in enumerate(dataframe.itertuples(), 1):
+            for j, value in enumerate(row[1:]):
+                table.cell(i, j).text = Crypt.decrypt_data(value)
 
-            doc.save(output_file if output_file else f'{table_name}.docx')
+        doc.save(output_file if output_file else f'{table_name}.docx')
+        connection.close()
 
     @staticmethod
     def export_to_excel(database_path, table_name, output_file):
-        with sqlite3.connect(database_path) as connection:
-            dataframe = pandas.read_sql_query(f"SELECT * FROM {table_name}", connection)
-            dataframe = dataframe.map(Crypt.decrypt_data)
-            dataframe.to_excel(output_file if output_file else f'{table_name}.xlsx', index=False, engine='openpyxl')
+        connection = sqlite3.connect(database_path)
+        dataframe = pandas.read_sql_query(f"SELECT * FROM {table_name}", connection)
+        dataframe = dataframe.map(Crypt.decrypt_data)
+        dataframe.to_excel(output_file if output_file else f'{table_name}.xlsx', index=False, engine='openpyxl')
+        connection.close()
 
     @staticmethod
     def export_to_csv(database_path, table_name, output_file):
-        with sqlite3.connect(database_path) as connection:
-            dataframe = pandas.read_sql_query(f"SELECT * FROM {table_name}", connection)
-            dataframe = dataframe.map(Crypt.decrypt_data)
-            dataframe.to_csv(output_file if output_file else f'{table_name}.csv', index=False, encoding='UTF-8')
+        connection = sqlite3.connect(database_path)
+        dataframe = pandas.read_sql_query(f"SELECT * FROM {table_name}", connection)
+        dataframe = dataframe.map(Crypt.decrypt_data)
+        dataframe.to_csv(output_file if output_file else f'{table_name}.csv', index=False, encoding='UTF-8')
+        connection.close()
 
     @staticmethod
     def export_to_html(database_path, table_name, output_file, decrypt=True):
-        with sqlite3.connect(database_path) as connection:
-            dataframe = pandas.read_sql_query(f"SELECT * FROM {table_name}", connection)
-            dataframe = dataframe.map(Crypt.decrypt_data) if decrypt else dataframe
-            html_content = dataframe.to_html(index=False, border=1)
+        connection = sqlite3.connect(database_path)
+        dataframe = pandas.read_sql_query(f"SELECT * FROM {table_name}", connection)
+        dataframe = dataframe.map(Crypt.decrypt_data) if decrypt else dataframe
+        html_content = dataframe.to_html(index=False, border=1)
 
-            # Добавляем мета-тег кодировки
-            html_file = f"""
-              <!DOCTYPE html>
-              <html lang="en">
-              <head>
-                  <meta charset="UTF-8">
-                  <title>{table_name}</title>
-              </head>
-              <body>
-                  {html_content}
-              </body>
-              </html>
-              """
-
-            with open(output_file if output_file else f'{table_name}.html', 'w', encoding='UTF-8') as file:
-                file.write(html_file)
+        # Добавляем мета-тег кодировки
+        html_file = f"""
+          <!DOCTYPE html>
+          <html lang="en">
+          <head>
+              <meta charset="UTF-8">
+              <title>{table_name}</title>
+          </head>
+          <body>
+              {html_content}
+          </body>
+          </html>
+          """
+        connection.close()
+        with open(output_file if output_file else f'{table_name}.html', 'w', encoding='UTF-8') as file:
+            file.write(html_file)
 
 
 def main():
