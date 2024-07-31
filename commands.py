@@ -3,7 +3,7 @@ from abc import ABC, abstractmethod
 from telegram.ext import CommandHandler, MessageHandler, filters
 
 from config import config
-from database_scripts import BotDatabase
+from dbscripts import BotDatabase
 
 
 async def send_message(update, context, text):
@@ -138,18 +138,6 @@ class RequestCommand(Commands):
     async def _next_step(self, update, context):
         if context.user_data:
             await getattr(self, f'_step_{len(context.user_data)}')(update, context)
-
-
-# test
-class TestCommand(Commands):
-    TEST_COMMAND_TEXT = "Тестовое сообщение"
-
-    def setup(self, bot):
-        test_handler = CommandHandler('test', self.run)
-        bot.add_handler(test_handler)
-
-    async def run(self, update, context):
-        await send_message(update, context, self.TEST_COMMAND_TEXT)
 
 
 class UnknownCommand(Commands):

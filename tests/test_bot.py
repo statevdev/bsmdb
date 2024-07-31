@@ -1,13 +1,12 @@
 import os
 import shutil
-import gc
 import tempfile
 import unittest
-from unittest.mock import MagicMock
+from unittest.mock import Mock
 
 from bot import Bot
 from commands import CommandsFactory, Commands
-from database_scripts import BotDatabase
+from dbscripts import BotDatabase
 from pageupd import GithubPageUpdater
 
 
@@ -16,7 +15,7 @@ class TestBot(unittest.TestCase):
         self.bot = Bot('test_token')
 
     def test_initialization(self):
-        application_builder = MagicMock()
+        application_builder = Mock()
         self.bot.application = application_builder().token().build()
 
         commands = CommandsFactory.create_commands(self.bot.application)
@@ -24,7 +23,7 @@ class TestBot(unittest.TestCase):
         self.assertEqual(len(commands), len(Commands.__subclasses__()))  # Проверяем, что команды создаются
 
     def test_run(self):
-        self.bot.application.run_polling = MagicMock(return_value='test_response')
+        self.bot.application.run_polling = Mock(return_value='test_response')
         result = self.bot.run()
 
         self.bot.application.run_polling.assert_called_once()  # Проверяем, что функция вызывалась один раз

@@ -1,7 +1,7 @@
 import logging
 from telegram.ext import ApplicationBuilder
 from commands import CommandsFactory
-from database_scripts import BotDatabase
+from dbscripts import BotDatabase
 from pageupd import GithubPageUpdater
 from config import config
 
