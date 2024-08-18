@@ -6,10 +6,6 @@ from config import config
 from dbscripts import BotDatabase
 
 
-async def send_message(update, context, text):
-    await context.bot.send_message(chat_id=update.effective_chat.id, text=text)
-
-
 class Commands(ABC):
     @abstractmethod
     def setup(self, bot):
@@ -41,7 +37,7 @@ class StartCommand(Commands):
         bot.add_handler(start_handler)
 
     async def run(self, update, context):
-        await send_message(update, context, self.START_COMMAND_TEXT)
+        await context.bot.send_message(chat_id=update.effective_chat.id, text=self.START_COMMAND_TEXT)
 
 
 class HelpCommand(Commands):
@@ -54,7 +50,7 @@ class HelpCommand(Commands):
         bot.add_handler(help_handler)
 
     async def run(self, update, context):
-        await send_message(update, context, self.HELP_COMMAND_TEXT)
+        await context.bot.send_message(chat_id=update.effective_chat.id, text=self.HELP_COMMAND_TEXT)
 
 
 class SettingsCommand(Commands):
@@ -67,7 +63,7 @@ class SettingsCommand(Commands):
         bot.add_handler(settings_handler)
 
     async def run(self, update, context):
-        await send_message(update, context, self.SETTINGS_COMMAND_TEXT)
+        await context.bot.send_message(chat_id=update.effective_chat.id, text=self.SETTINGS_COMMAND_TEXT)
 
 
 class RequestCommand(Commands):
@@ -89,7 +85,7 @@ class RequestCommand(Commands):
     async def run(self, update, context):
         if not context.user_data:
             context.user_data['problem_description'] = None  # Начальное состояние
-            await send_message(update, context, text=self.PROBLEM_DESCRIPTION)
+            await context.bot.send_message(chat_id=update.effective_chat.id, text=self.PROBLEM_DESCRIPTION)
         else:
             context.user_data.clear()  # Сброс состояния
             await self.run(update, context)
@@ -97,7 +93,7 @@ class RequestCommand(Commands):
     async def _step_1(self, update, context):
         context.user_data['user_name'] = None
         context.user_data['problem_description'] = update.message.text
-        await send_message(update, context, text=self.USER_NAME_QUESTION)
+        await context.bot.send_message(chat_id=update.effective_chat.id, text=self.USER_NAME_QUESTION)
 
     async def _step_2(self, update, context):
         user_name = update.message.text
@@ -105,9 +101,12 @@ class RequestCommand(Commands):
             context.user_data['contact_info'] = None
             context.user_data['user_name'] = user_name.title()
 
-            await send_message(update, context, text=self.CONTACT_INFO_QUESTION.format(user_name.title()))
+            await context.bot.send_message(
+                chat_id=update.effective_chat.id,
+                text=self.CONTACT_INFO_QUESTION.format(user_name.title())
+            )
         else:
-            await send_message(update, context, text=self.NAME_ERROR)
+            await context.bot.send_message(chat_id=update.effective_chat.id, text=self.NAME_ERROR)
 
     async def _step_3(self, update, context):
         async def validate_phone_number(phone_number):
@@ -119,9 +118,9 @@ class RequestCommand(Commands):
         if await validate_phone_number(update.message.text):
             context.user_data['contact_time'] = None
             context.user_data['contact_info'] = update.message.text
-            await send_message(update, context, text=self.CONTACT_TIME_QUESTION)
+            await context.bot.send_message(chat_id=update.effective_chat.id, text=self.CONTACT_TIME_QUESTION)
         else:
-            await send_message(update, context, text=self.PHONE_NUMBER_ERROR)
+            await context.bot.send_message(chat_id=update.effective_chat.id, text=self.PHONE_NUMBER_ERROR)
 
     async def _step_4(self, update, context):
         context.user_data['contact_time'] = update.message.text
@@ -132,7 +131,10 @@ class RequestCommand(Commands):
             request_id=update.update_id,
             **context.user_data
         )
-        await send_message(update, context, text=self.FINAL_TEXT.format(context.user_data['user_name']))
+        await context.bot.send_message(
+            chat_id=update.effective_chat.id,
+            text=self.FINAL_TEXT.format(context.user_data['user_name'])
+        )
         context.user_data.clear()  # Сброс состояния
 
     async def _next_step(self, update, context):
@@ -148,7 +150,7 @@ class UnknownCommand(Commands):
         bot.add_handler(unknown_handler)
 
     async def run(self, update, context):
-        await send_message(update, context, self.UNKNOWN_COMMAND_TEXT)
+        await context.bot.send_message(chat_id=update.effective_chat.id, text=self.UNKNOWN_COMMAND_TEXT)
 
 
 

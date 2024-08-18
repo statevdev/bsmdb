@@ -10,6 +10,7 @@ from dbscripts import BotDatabase
 from pageupd import GithubPageUpdater
 
 
+# Тест класса Bot
 class TestBot(unittest.TestCase):
     def setUp(self):
         self.bot = Bot('test_token')
@@ -30,6 +31,7 @@ class TestBot(unittest.TestCase):
         self.assertEqual(result, 'test_response')  # Проверяем, что возвращается ожидаемое значение
 
 
+# Тест функции main
 class TestMain(unittest.TestCase):
     def setUp(self):
         self.temp_dir = tempfile.mkdtemp()  # Создаем временную директорию
