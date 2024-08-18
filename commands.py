@@ -103,8 +103,7 @@ class RequestCommand(Commands):
 
             await context.bot.send_message(
                 chat_id=update.effective_chat.id,
-                text=self.CONTACT_INFO_QUESTION.format(user_name.title())
-            )
+                text=self.CONTACT_INFO_QUESTION.format(user_name.title()))
         else:
             await context.bot.send_message(chat_id=update.effective_chat.id, text=self.NAME_ERROR)
 
@@ -129,12 +128,10 @@ class RequestCommand(Commands):
         await database.save_user_data(
             user_id=update.effective_user.id,
             request_id=update.update_id,
-            **context.user_data
-        )
+            **context.user_data)
+
         await context.bot.send_message(
-            chat_id=update.effective_chat.id,
-            text=self.FINAL_TEXT.format(context.user_data['user_name'])
-        )
+            chat_id=update.effective_chat.id, text=self.FINAL_TEXT.format(context.user_data['user_name']))
         context.user_data.clear()  # Сброс состояния
 
     async def _next_step(self, update, context):
