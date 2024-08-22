@@ -1,6 +1,5 @@
 import os
 import shutil
-import tempfile
 import unittest
 from unittest.mock import Mock
 
@@ -8,12 +7,13 @@ from bot import Bot
 from commands import CommandsFactory, Commands
 from dbscripts import BotDatabase
 from pageupd import GithubPageUpdater
+from test_config import config, temp_dir
 
 
 # Тест класса Bot
 class TestBot(unittest.TestCase):
     def setUp(self):
-        self.bot = Bot('test_token')
+        self.bot = Bot(config['bot']['telegram_token'])
 
     def test_initialization(self):
         application_builder = Mock()
@@ -33,32 +33,20 @@ class TestBot(unittest.TestCase):
 
 # Тест функции main
 class TestMain(unittest.TestCase):
-    def setUp(self):
-        self.temp_dir = tempfile.mkdtemp()  # Создаем временную директорию
-        self.config_pageupd = {
-            'local_repo': self.temp_dir,
-            'database_path': os.path.join(self.temp_dir, 'test.db'),
-            'html_files': {
-                'users': os.path.join(self.temp_dir, 'test_users.html'),
-                'requests': os.path.join(self.temp_dir, 'test_requests.html')
-            },
-            'commit_message': 'Test'
-        }
-
     def test_main(self):
-        database = BotDatabase(self.config_pageupd['database_path'])
+        database = BotDatabase(config['db']['database_path'])
         database.create_tables()
 
-        updater = GithubPageUpdater(**self.config_pageupd)
+        updater = GithubPageUpdater(**config['pageupd'])
         updater.htmls_creator()
 
         # Проверяем, что нужные файлы создались
-        self.assertTrue(os.path.exists(self.config_pageupd['database_path']))
-        self.assertTrue(os.path.exists(self.config_pageupd['html_files']['users']))
-        self.assertTrue(os.path.exists(self.config_pageupd['html_files']['requests']))
+        self.assertTrue(os.path.exists(config['db']['database_path']))
+        self.assertTrue(os.path.exists(config['pageupd']['html_files']['users']))
+        self.assertTrue(os.path.exists(config['pageupd']['html_files']['requests']))
 
     def tearDown(self):
-        shutil.rmtree(self.temp_dir)
+        shutil.rmtree(temp_dir)
 
 
 if __name__ == '__main__':
