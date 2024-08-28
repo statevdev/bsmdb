@@ -29,11 +29,11 @@ class BotDatabase:
         cursor.execute("""
             INSERT OR REPLACE INTO users (user_id, user_name, contact_info)
             VALUES (?,?,?)""",
-                       await Crypt.tuple_encrypter(user_id, user_name, contact_info))
+                       await Crypt.encrypt_data(user_id, user_name, contact_info))
         cursor.execute("""
             INSERT INTO requests (request_id, user_id, problem_description, contact_time)
             VALUES(?,?,?,?)""",
-                       await Crypt.tuple_encrypter(request_id, user_id, problem_description, contact_time))
+                       await Crypt.encrypt_data(request_id, user_id, problem_description, contact_time))
         connection.close()
 
 

@@ -7,13 +7,13 @@ from bot import Bot
 from commands import CommandsFactory, Commands
 from dbscripts import BotDatabase
 from pageupd import GithubPageUpdater
-from test_config import config, temp_dir
+from test_config import test_config, temp_dir
 
 
 # Тест класса Bot
 class TestBot(unittest.TestCase):
     def setUp(self):
-        self.bot = Bot(config['bot']['telegram_token'])
+        self.bot = Bot(test_config['bot']['telegram_token'])
 
     def test_initialization(self):
         application_builder = Mock()
@@ -34,16 +34,16 @@ class TestBot(unittest.TestCase):
 # Тест функции main
 class TestMain(unittest.TestCase):
     def test_main(self):
-        database = BotDatabase(config['db']['database_path'])
+        database = BotDatabase(test_config['db']['database_path'])
         database.create_tables()
 
-        updater = GithubPageUpdater(**config['pageupd'])
+        updater = GithubPageUpdater(**test_config['pageupd'])
         updater.htmls_creator()
 
         # Проверяем, что нужные файлы создались
-        self.assertTrue(os.path.exists(config['db']['database_path']))
-        self.assertTrue(os.path.exists(config['pageupd']['html_files']['users']))
-        self.assertTrue(os.path.exists(config['pageupd']['html_files']['requests']))
+        self.assertTrue(os.path.exists(test_config['db']['database_path']))
+        self.assertTrue(os.path.exists(test_config['pageupd']['html_files']['users']))
+        self.assertTrue(os.path.exists(test_config['pageupd']['html_files']['requests']))
 
     def tearDown(self):
         shutil.rmtree(temp_dir)

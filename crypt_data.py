@@ -9,6 +9,6 @@ class Crypt:
         return fernet.decrypt(data.encode()).decode()
 
     @staticmethod
-    async def tuple_encrypter(*args):
+    async def encrypt_data(*args):
         fernet = Fernet(config['db']['key'])
         return tuple(fernet.encrypt(str(arg).encode()).decode() for arg in args)

@@ -2,7 +2,7 @@ import os
 import tempfile
 
 temp_dir = tempfile.mkdtemp()  # Создаем временную директорию
-config = {
+test_config = {
     'bot': {
         'telegram_token': 'test_token',
     },
