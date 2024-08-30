@@ -6,7 +6,6 @@ import unittest
 from unittest.mock import Mock, AsyncMock, patch
 
 from commands import StartCommand, HelpCommand, SettingsCommand, RequestCommand, UnknownCommand
-from dbscripts import BotDatabase
 from test_config import test_config, temp_dir
 
 
