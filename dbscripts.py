@@ -34,6 +34,7 @@ class BotDatabase:
             INSERT INTO requests (request_id, user_id, problem_description, contact_time)
             VALUES(?,?,?,?)""",
                        await Crypt.encrypt_data(request_id, user_id, problem_description, contact_time))
+        connection.commit()
         connection.close()
 
 
