@@ -1,11 +1,14 @@
 import asyncio
+import os
 import re
 import shutil
+import tempfile
 
 import unittest
 from unittest.mock import Mock, AsyncMock, patch
 
 from commands import StartCommand, HelpCommand, SettingsCommand, RequestCommand, UnknownCommand
+from dbscripts import BotDatabase
 from test_config import test_config, temp_dir
 
 
@@ -149,14 +152,17 @@ class TestRequestCommand(unittest.TestCase):
 
     @patch.dict('config.config', test_config)
     @patch("dbscripts.BotDatabase")
-    async def test_step_4(self, mock_bot_database):
-        temp_path = test_config['db']['database_path']
-        mock_database_instance = mock_bot_database.return_value
-        mock_database_instance.path = temp_path
-        mock_database_instance.create_tables = AsyncMock()
-        mock_database_instance.save_user_data = AsyncMock()
+    def test_step_4(self, mock_bot_database):
+        # Подмена необходима для корректного запуска теста из консоли
+        temp_dir = tempfile.mkdtemp() # Перекрываем temp_dir из test_config
+        temp_path = os.path.join(temp_dir, 'test.db') # Указываем новый путь к тестовой базе данных
+        test_config['db']['database_path'] = temp_path # Подменяем путь
 
-        await mock_database_instance.create_tables()
+        mock_database_instance = mock_bot_database.return_value
+        mock_database_instance.create_tables = Mock(side_effect=BotDatabase(temp_path).create_tables)
+        mock_database_instance.save_user_data = AsyncMock(side_effect=mock_database_instance.save_user_data)
+
+        mock_database_instance.create_tables()
 
         self.context.user_data['user_name'] = "test_user_name"
         self.context.user_data['problem_description'] = "test_problem_description"
@@ -164,7 +170,7 @@ class TestRequestCommand(unittest.TestCase):
         self.update.message.text = "test_contact_time"
 
         # Запускаем метод _step_4
-        await self.command._step_4(self.update, self.context)
+        asyncio.run(self.command._step_4(self.update, self.context))
 
         # Проверяем, что словарь user_data был очищен
         self.assertFalse(self.context.user_data)
