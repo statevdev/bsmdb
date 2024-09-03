@@ -4,9 +4,10 @@ from commands import CommandsFactory
 from dbscripts import BotDatabase
 from pageupd import GithubPageUpdater
 try:
-    import config
+    from config import config
 except ImportError:
-    from test_config import test_config as config
+    from test_config import test_config
+    config = test_config
 
 logging.basicConfig(
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',

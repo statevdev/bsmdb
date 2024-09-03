@@ -2,10 +2,10 @@ import git
 from apscheduler.schedulers.background import BackgroundScheduler
 from expdata import ExportData
 try:
-    import config
+    from config import config
 except ImportError:
-    from test_config import test_config as config
-
+    from test_config import test_config
+    config = test_config
 
 class GithubPageUpdater:
     def __init__(self, local_repo, database_path, html_files, commit_message):

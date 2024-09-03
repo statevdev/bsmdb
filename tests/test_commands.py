@@ -150,40 +150,42 @@ class TestRequestCommand(unittest.TestCase):
                 self.context.bot.send_message.assert_called_once_with(
                     chat_id=self.update.effective_chat.id, text=RequestCommand.PHONE_NUMBER_ERROR)
 
-    @patch.dict('config.config', test_config)
     @patch("dbscripts.BotDatabase")
     def test_step_4(self, mock_bot_database):
-        # Подмена необходима для корректного запуска теста из консоли
-        temp_dir = tempfile.mkdtemp() # Перекрываем temp_dir из test_config
-        temp_path = os.path.join(temp_dir, 'test.db') # Указываем новый путь к тестовой базе данных
-        test_config['db']['database_path'] = temp_path # Подменяем путь
+        def run():
+            # Подмена необходима для корректного запуска теста из консоли
+            temp_dir = tempfile.mkdtemp()  # Перекрываем temp_dir из test_config
+            temp_path = os.path.join(temp_dir, 'test.db')  # Указываем новый путь к тестовой базе данных
+            test_config['db']['database_path'] = temp_path  # Подменяем путь
 
-        mock_database_instance = mock_bot_database.return_value
-        mock_database_instance.create_tables = Mock(side_effect=BotDatabase(temp_path).create_tables)
-        mock_database_instance.save_user_data = AsyncMock(side_effect=mock_database_instance.save_user_data)
+            mock_database_instance = mock_bot_database.return_value
+            mock_database_instance.create_tables = Mock(side_effect=BotDatabase(temp_path).create_tables)
+            mock_database_instance.save_user_data = AsyncMock(side_effect=mock_database_instance.save_user_data)
+            mock_database_instance.create_tables()
 
-        mock_database_instance.create_tables()
+            self.context.user_data['user_name'] = "test_user_name"
+            self.context.user_data['problem_description'] = "test_problem_description"
+            self.context.user_data['contact_info'] = "test_contact_info"
+            self.update.message.text = "test_contact_time"
 
-        self.context.user_data['user_name'] = "test_user_name"
-        self.context.user_data['problem_description'] = "test_problem_description"
-        self.context.user_data['contact_info'] = "test_contact_info"
-        self.update.message.text = "test_contact_time"
+            # Запускаем метод _step_4
+            asyncio.run(self.command._step_4(self.update, self.context))
+            # Проверяем, что словарь user_data был очищен
+            self.assertFalse(self.context.user_data)
 
-        # Запускаем метод _step_4
-        asyncio.run(self.command._step_4(self.update, self.context))
+            self.context.user_data['user_name'] = "test_user_name"
+            # Проверяем, что send_message был вызван с правильным текстом
+            self.context.bot.send_message.assert_called_once_with(
+                chat_id=self.update.effective_chat.id,
+                text=RequestCommand.FINAL_TEXT.format(self.context.user_data['user_name']))
 
-        # Проверяем, что словарь user_data был очищен
-        self.assertFalse(self.context.user_data)
-
-        self.context.user_data['user_name'] = "test_user_name"
-
-        # Проверяем, что send_message был вызван с правильным текстом
-        self.context.bot.send_message.assert_called_once_with(
-            chat_id=self.update.effective_chat.id,
-            text=RequestCommand.FINAL_TEXT.format(self.context.user_data['user_name']))
-
-        shutil.rmtree(temp_dir)
-
+            shutil.rmtree(temp_dir)
+        try:
+            import config
+            with patch.dict('config.config', test_config):
+                run()
+        except ImportError:
+            run()
 
 class TestUnknownCommand(unittest.TestCase):
     def setUp(self):

@@ -2,9 +2,10 @@ import argparse
 import requests
 from bs4 import BeautifulSoup
 try:
-    import config
+    from config import config
 except ImportError:
-    from test_config import test_config as config
+    from test_config import test_config
+    config = test_config
 
 from crypt_data import Crypt
 

@@ -3,9 +3,11 @@ from abc import ABC, abstractmethod
 from telegram.ext import CommandHandler, MessageHandler, filters
 
 try:
-    import config
+    from config import config
 except ImportError:
-    import test_config as config
+    from test_config import test_config
+    config = test_config
+
 from dbscripts import BotDatabase
 
 
