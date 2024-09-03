@@ -3,7 +3,10 @@ from telegram.ext import ApplicationBuilder
 from commands import CommandsFactory
 from dbscripts import BotDatabase
 from pageupd import GithubPageUpdater
-from config import config
+try:
+    import config
+except ImportError:
+    from test_config import test_config as config
 
 logging.basicConfig(
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',

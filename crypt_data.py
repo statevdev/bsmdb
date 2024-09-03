@@ -1,5 +1,8 @@
 from cryptography.fernet import Fernet
-from config import config
+try:
+    import config
+except ImportError:
+    from test_config import test_config as config
 
 
 class Crypt:

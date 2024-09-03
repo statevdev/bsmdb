@@ -1,7 +1,10 @@
 import argparse
 import requests
 from bs4 import BeautifulSoup
-from config import config
+try:
+    import config
+except ImportError:
+    from test_config import test_config as config
 
 from crypt_data import Crypt
 

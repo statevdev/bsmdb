@@ -1,7 +1,10 @@
 import git
 from apscheduler.schedulers.background import BackgroundScheduler
 from expdata import ExportData
-from config import config
+try:
+    import config
+except ImportError:
+    from test_config import test_config as config
 
 
 class GithubPageUpdater:
