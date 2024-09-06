@@ -24,25 +24,6 @@ class TestGithubPageDownloader(unittest.TestCase):
                 run()
         except (ImportError, ModuleNotFoundError):
             run()
-#     def test_github_page_downloader(self):
-#         temp_dir_with_html = tempfile.mkdtemp()
-#         test_path = os.path.join(temp_dir_with_html, 'test.html')
-#
-#         def run():
-#             try:
-#                 github_page_downloader('users', output_file=test_path, decrypt=True)
-#                 self.assertTrue(os.path.exists(test_path))
-#             except Exception as e:
-#                 self.fail(f"Function raised an exception: {e}")
-#             finally:
-#                 shutil.rmtree(temp_dir_with_html)
-#
-#         try:
-#             import config
-#             with patch('config.config', test_config):
-#                 run()
-#         except ImportError:
-#             run()
 
 
 if __name__ == '__main__':
