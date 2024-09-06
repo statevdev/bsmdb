@@ -14,7 +14,7 @@ class TestGithubPageDownloader(unittest.TestCase):
         test_path = os.path.join(temp_dir_with_html, 'test.html')
 
         def run():
-            github_page_downloader('users', output_file=test_path, decrypt=True)
+            github_page_downloader('users', output_file=test_path, decrypt=False)
             self.assertTrue(os.path.exists(test_path))
             shutil.rmtree(temp_dir_with_html)
 
