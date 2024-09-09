@@ -10,7 +10,15 @@ except ImportError:
 from crypt_data import Crypt
 
 
-def github_page_downloader(table_name, output_file, decrypt):
+def github_page_downloader(table_name: str, output_file: str, decrypt: bool) -> None:
+    """
+    Скачивает html-страницу с указанной таблицей.
+
+    :param table_name: Имя таблицы, которую нужно скачать.
+    :param output_file: Путь к выходному файлу. Если не указан, используется имя таблицы.
+    :param decrypt: Флаг, указывающий, нужно ли расшифровывать данные.
+    :return: None
+    """
     default_url = config['pagedwn']['tables_urls'][table_name]
     response = requests.get(default_url)
     html_data = response.text
@@ -24,7 +32,12 @@ def github_page_downloader(table_name, output_file, decrypt):
         file.write(soup.prettify())
 
 
-def main():
+def main() -> None:
+    """
+    Главная функция для обработки аргументов командной строки и вызова функции github_page_downloader.
+
+    :return: None
+    """
     parser = argparse.ArgumentParser(description='Downloading table from Github Page.')
 
     parser.add_argument('table_name', help='Name of the table to download')
@@ -46,4 +59,12 @@ def main():
 
 
 if __name__ == '__main__':
+    """
+    Этот модуль можно запустить напрямую через терминал в формате:
+    
+    `python pagedwn.py <имя таблицы> -o <путь, по которому сохранить файл (опционально)> -d <значение флага дешифрования
+    : True или False (опционально, по умолчанию стоит флаг True)>`,
+
+    тем самым вручную скачав таблицу в эту же папку, либо в другое указанное место.
+    """
     main()
